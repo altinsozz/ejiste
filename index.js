@@ -1,14 +1,13 @@
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
-const { prefix, token } = require('./config.json');
+const { prefix } = require('./config.json');
+const mongoose = require('mongoose');
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
 });
 
-// const client = new Client();
 client.commands = new Collection();
-
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
@@ -38,22 +37,15 @@ client.on('message', message => {
   }
 });
 
-client.login(token);
-
-
-
-const mongoose = require('mongoose');
-
 mongoose.connect('mongodb+srv://nae28:altinsozz@cluster0.q3tth.mongodb.net/nae28?retryWrites=true&w=majority', {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: false,
+  useUnifiedTopology: true
 }).then(() => {
-  console.log('Connected to MongoDB!');
-}).catch(err => {
-  console.error('Failed to connect to MongoDB', err);
+  console.log('Connected to MongoDB');
+}).catch((error) => {
+  console.error('Error connecting to MongoDB', error);
 });
 
 
 
-
+client.login(process.env.token);
